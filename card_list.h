@@ -5,4 +5,4 @@
 #ifndef CARD_LIST_H
 #define CARD_LIST_H
 
-#endif
+#endif // CARD_LIST_H

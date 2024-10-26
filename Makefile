@@ -1,7 +1,9 @@
-CXX=g++ 
+CXX = g++
 CXXFLAGS = -g --std=c++20 -Wall
 
-all: game game_set
+BINARIES = game game_set
+
+all: ${BINARIES}
 
 game_set: card.o main_set.o
 	${CXX} ${CXXFLAGS} card.o main_set.o -o game_set
@@ -29,4 +31,4 @@ card.o: card.cpp card.h
 	${CXX} ${CXXFLAGS} card.cpp -c
 
 clean:
-	rm game_set game *.o
+	rm -rf *.o ${BINARIES}
