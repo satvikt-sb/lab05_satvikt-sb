@@ -1,3 +1,3 @@
 // card_list.cpp
-// Author: Your name
+// Author: Satvik Talchuru
 // Implementation of the classes defined in card_list.h
