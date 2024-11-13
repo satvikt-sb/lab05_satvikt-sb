@@ -6,23 +6,23 @@ BINARIES = game game_set
 all: ${BINARIES}
 
 game_set: card.o main_set.o
-	${CXX} ${CXXFLAGS} card.o main_set.o -o game_set
+	${CXX} ${CXXFLAGS} $^ -o game_set
 
-game: card_list.o main.o
-	${CXX} ${CXXFLAGS} card_list.o main.o -o game
+game: card.o card_list.o main.o
+	${CXX} ${CXXFLAGS} $^ -o game
 
 tests: card.o card_list.o tests.o
-	${CXX} ${CXXFLAGS} card.o card_list.o tests.o -o tests
+	${CXX} ${CXXFLAGS} $^ -o tests
 	./tests
 
 main_set.o: main_set.cpp
-	${CXX} ${CXXFLAGS} main_set.cpp -c
+	${CXX} ${CXXFLAGS} $^ -c
 
 main.o: main.cpp
-	${CXX} ${CXXFLAGS} main.cpp -c
+	${CXX} ${CXXFLAGS} $^ -c
 
 tests.o: tests.cpp
-	${CXX} ${CXXFLAGS} tests.cpp -c
+	${CXX} ${CXXFLAGS} $^ -c
 
 card_list.o: card_list.cpp card_list.h
 	${CXX} ${CXXFLAGS} card_list.cpp -c
