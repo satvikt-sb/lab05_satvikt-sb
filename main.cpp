@@ -30,12 +30,18 @@ int main(int argv, char** argc){
 
   //Read each file
   while (getline (cardFile1, line) && (line.length() > 0)){
-    alice.insert(card(line[0], line.substr(2)));
+    char suit = line[0];
+    string value = line.substr(2);
+    card card(suit, value);
+    alice.insert(card);
   }
   cardFile1.close();
 
   while (getline (cardFile2, line) && (line.length() > 0)){
-    bob.insert(card(line[0], line.substr(2)));
+    char suit = line[0];
+    string value = line.substr(2);
+    card card(suit, value);
+    bob.insert(card);
   }
   cardFile2.close();
 
