@@ -42,23 +42,24 @@ bool card_list::insert(card value, Node *n) {
         n = new Node(value);
         return true;
     }
-
-    if (value == n->info) {
-        return false;
-    } else if (value < n->info) {
-        if (n->left == nullptr) {
+    if (value < n->info) {
+        if (!n->left) {
             n->left = new Node(value);
+            n->left->parent = n;
             return true;
         } else {
             return insert(value, n->left);
         }
-    } else {
-        if (n->right == nullptr) {
+    } else if (value > n->info) {
+        if (!n->right) {
             n->right = new Node(value);
+            n->right->parent = n;
             return true;
         } else {
             return insert(value, n->right);
         }
+    } else {
+        return false;
     }
 }
 
@@ -110,90 +111,6 @@ bool card_list::isEmpty() const {
     return false;
 }
 
-// returns the Node containing the predecessor of the given value
-card_list::Node* card_list::getPredecessorNode(card value) const{
-    Node* current = getNodeFor(value, root);
-
-    if (current == nullptr) {
-        return nullptr;  
-    }
-
-    //
-    else if (current->left != nullptr) {
-        current = current->left;
-
-        while (current->right != nullptr) {
-            current = current->right;  
-        }
-        return current;
-    }
-    else {
-        Node* parent = root;
-        Node* predecessor = nullptr;
-        while (parent != nullptr) {
-            if (value > parent->info) {
-                predecessor = parent;
-                parent = parent->right;
-            } else {
-                parent = parent->left;
-            }
-        }
-        return predecessor;
-    }
-}
-
-// returns the predecessor value of the given value or 0 if there is none
-card card_list::getPredecessor(card value) const{
-    Node* pred = getPredecessorNode(value);
-
-    if (pred == nullptr) {
-        return {'0',"0"};
-    } else {
-        return pred->info;
-    }
-}
-
-// returns the Node containing the successor of the given value
-card_list::Node* card_list::getSuccessorNode(card value) const{
-    Node* current = getNodeFor(value, root);
-
-    if (current == nullptr) {
-        return nullptr; 
-    }
-    else if (current->right != nullptr){
-        current = current->right;
-
-        while (current->left != nullptr) {
-            current = current->left;  
-        }
-        return current;
-    }
-    else {
-        Node* parent = root;
-        Node* successor = nullptr;
-        while (parent != nullptr) {
-            if (value < parent->info) {
-                successor = parent;  
-                parent = parent->left;
-            } else {
-                parent = parent->right;
-            }
-        }
-    return successor;
-    }
-}
-
-// returns the successor value of the given value or 0 if there is none
-card card_list::getSuccessor(card value) const{
-    Node* succ = getSuccessorNode(value);
-
-    if (succ == nullptr) {
-        return {'0',"0"};
-    } else {
-        return succ->info;
-    }
-}
-
 //finding rightmost node
 card card_list::findMax() const {
     Node* node = root;
@@ -212,12 +129,87 @@ card card_list::findMin() const {
     return node->info;
 }
 
+// returns the Node containing the predecessor of the given value
+card_list::Node* card_list::getPredecessorNode(card value) const{
+    Node* curr = getNodeFor(value, root);
+
+    if (curr == nullptr) {
+        return nullptr;  
+    }
+
+    //
+    else if (curr->left != nullptr) {
+        curr = curr->left;
+
+        while (curr->right != nullptr) {
+            curr = curr->right;  
+        }
+        return curr;
+    }
+    else {
+        Node* parent = root;
+        while (parent != nullptr && curr == parent->left) {
+            curr = parent;
+            parent = parent->parent;
+        }
+        return parent;
+    }
+}
+
+// returns the predecessor value of the given value or 0 if there is none
+card card_list::getPredecessor(card value) const{
+    Node* pred = getPredecessorNode(value);
+
+    if (pred == nullptr) {
+        return {'0',"0"};
+    } else {
+        return pred->info;
+    }
+}
+
+// returns the Node containing the successor of the given value
+card_list::Node* card_list::getSuccessorNode(card value) const{
+    Node* curr = getNodeFor(value, root);
+
+    if (curr == nullptr) {
+        return nullptr; 
+    }
+    else if (curr->right != nullptr){
+        curr = curr->right;
+
+        while (curr->left != nullptr) {
+            curr = curr->left;  
+        }
+        return curr;
+    }
+    else {
+        Node* parent = curr->parent;
+        while (parent != nullptr && curr == parent->right) {
+            curr = parent;
+            parent = parent->parent;
+        }
+        return parent;
+        }
+    }
+
+// returns the successor value of the given value or 0 if there is none
+card card_list::getSuccessor(card value) const{
+    Node* succ = getSuccessorNode(value);
+
+    if (succ == nullptr) {
+        return {'0',"0"};
+    } else {
+        return succ->info;
+    }
+}
+
 bool card_list::remove(card value){
     if (!contains(value)){
         return false;
     }
 
     Node* delNode = getNodeFor(value, root);
+
     //0 children
     if (delNode-> left == nullptr && delNode->right == nullptr){
         if(delNode->parent == nullptr){
@@ -231,18 +223,20 @@ bool card_list::remove(card value){
     }
     //1 child
     else if (delNode->left == nullptr || delNode->right == nullptr) {
-        Node* child = (delNode->left) ? delNode->left : delNode->right;
+
+        card v('0',"0");
+        Node* child = new Node(v);
 
         if (delNode->parent == nullptr) {
-            root = child;  // The node to remove is the root
+            root = child;
             root->parent = nullptr;
         } else if (delNode->parent->right == delNode) {
             delNode->parent->right = child;
         } else {
             delNode->parent->left = child;
         }
-
         child->parent = delNode->parent;
+        
         delete delNode;
     }
     else {
@@ -252,7 +246,6 @@ bool card_list::remove(card value){
         remove(succ_val);
         delNode->info = succ_val;
     }
-
     return true;
 }
 
