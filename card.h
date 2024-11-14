@@ -5,6 +5,11 @@
 #ifndef CARD_H
 #define CARD_H
 
+
+#include <iostream>
+#include <set>
+using namespace std;
+
 class card{
     public:
         card(char suit, string value);
@@ -15,7 +20,7 @@ class card{
         char get_suit() const;
         string get_value() const;
     private:
-        pair <char,string> full_card;
+        pair <char,string> final_card;
 };
 
 
