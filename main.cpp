@@ -59,7 +59,6 @@ int main(int argc, char* argv[]) {
 
 void playgame(card_list &alice, card_list &bob){
   bool finished = false;
-  bool found = true;
   card aliceCard = alice.findMin();
   card bobCard = bob.findMax();
 
