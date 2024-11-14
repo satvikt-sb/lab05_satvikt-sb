@@ -73,38 +73,36 @@ int main(int argc, char* argv[]) {
 
 
 void playgame(set<card> &alice, set<card, DescendingOrder> &bob){
-  bool aliceTurn = true;
+  for (auto it = alice.begin(); it != alice.end();) {
+        auto matchInBob = bob.find(*it);
 
-  for (auto itAlice = alice.begin(), itBob = bob.begin(); !alice.empty() && !bob.empty();){
-    if (aliceTurn){
-      auto match = bob.find(*itAlice);
-      if(match != bob.end()) {
-        cout << "Alice picked matching card " << itAlice->get_suit() << " " <<  itAlice->get_value() << endl;
-        bob.erase(match);
-        itAlice = alice.erase(itAlice);
-        aliceTurn = false;
-      } else {
-        ++itAlice;
-        if(itAlice == alice.end()){
-          break;
+        if (matchInBob != bob.end()) {
+            cout << "Alice picked matching card " << it->get_suit() << " " << it->get_value() << endl;
+
+            bob.erase(matchInBob);
+            it = alice.erase(it);
+
+            for (auto rator = bob.begin(); rator != bob.end(); ) {
+                auto matchInAlice = alice.find(*rator);
+     
+                if (matchInAlice != alice.end()) {
+                    cout << "Bob picked matching card " << rator->get_suit() << " " << rator->get_value() << endl;
+    
+                    alice.erase(matchInAlice);
+                    rator = bob.erase(rator);
+                    break;
+                } else {
+                    ++rator;  
+                }
+            }
+        } else {
+            ++it; 
         }
-      }
-    }
-    else {
-      auto match2 = alice.find(*itBob);
-      if (match2 != alice.end()){
-        cout << "Bob picked matching card " << itBob->get_suit() << " " << itBob->get_value() << endl;
-        alice.erase(match2);
-        itBob = bob.erase(itBob);
-        aliceTurn = true;
-      } else {
-        ++itBob;
-        if (itBob == bob.end()){
-          break;
+
+        if (alice.empty() || bob.empty()) {
+            break;
         }
-      }
     }
-  }
 }
 
 
