@@ -60,74 +60,49 @@ int main(int argv, char** argc){
 }
 
 void game(card_list &alice, card_list &bob){
-    card aliceCard = alice.findMin();
-    card bobCard = bob.findMax();
+  bool finished = false;
+  card aliceCard = alice.findMin();
+  card bobCard = bob.findMax();
 
-    while (!alice.isEmpty() && !bob.isEmpty()) {
-        bool found = false;
+  while(finished == false){
 
-        // Alice's turn
-        while (bob.contains(aliceCard)) {
-            cout << "Alice picked matching card " << (aliceCard).get_suit() << " " << (aliceCard).get_value() << endl;
-            bob.remove(aliceCard);
-            alice.remove(aliceCard);
+    finished = true;
 
-            // Update aliceCard to new min
-            if (!alice.isEmpty()) {
-                aliceCard = alice.findMin();
-            } else {
-                aliceCard = card('0', "0");
-            }
-
-            // Update bobCard to new max
-            if (!bob.isEmpty()) {
-                bobCard = bob.findMax();
-            } else {
-                bobCard = card('0', "0");
-            }
-            
-            found = true;
-            break;
-        }
-
-        if (!found) {
-            aliceCard = alice.getSuccessor(aliceCard);
-            if (aliceCard == alice.findMax()){
-              return;
-            }
-        }
-
-        found = false;
-
-        // Bob's turn
-        while (alice.contains(bobCard)) {
-            cout << "Bob picked matching card " << bobCard.get_suit() << " " << bobCard.get_value() << endl;
-            alice.remove(bobCard);
-            bob.remove(bobCard);
-
-            // Update bobCard to new max
-            if (!bob.isEmpty()) {
-                bobCard = bob.findMax();
-            } else {
-                bobCard = card('0', "0");
-            }
-
-            // Update aliceCard to new min
-            if (!alice.isEmpty()) {
-                aliceCard = alice.findMin();
-            } else {
-                aliceCard = card('0', "0");
-            }
-
-            found = true;
-            break;
-        }
-
-        if (!found) {
-            bobCard = bob.getPredecessor(bobCard);
-            if (bobCard == bob.findMin()){
-              return;
-            }
-        }
+    //Alice's turn
+    while(true){
+      if(bob.contains(aliceCard)){
+        cout << "Alice picked matching card " << (aliceCard).get_suit() << " " << (aliceCard).get_value() << endl;
+        bob.remove(aliceCard);
+        alice.remove(aliceCard);
+        bobCard = bob.findMax();
+        finished = false;
+        break;
+      } else {
+        aliceCard = alice.getSuccessor(aliceCard);
+        
+        if (aliceCard == alice.findMax()) {
+          return;
       }
+    } 
+    }
+
+    //Bob's turn
+    while (true) {
+      if (alice.contains(bobCard)) {
+        cout << "Bob picked matching card " << (bobCard).get_suit() << " " << (bobCard).get_value() << endl;
+        bob.remove(bobCard); 
+        alice.remove(bobCard); 
+        aliceCard = alice.findMin(); 
+        finished = false;     
+        break;  
+      } else {
+        bobCard = bob.getPredecessor(bobCard); 
+
+        if (bobCard == bob.findMin()) {
+          return;
+        }
+        }
+
+    }
+  }
 }
