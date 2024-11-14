@@ -28,20 +28,18 @@ class card_list {
     card getSuccessor(card value) const;         // returns the successor value of the given value or 0 if there is none
     bool remove(card value);                    // deletes the Node containing the given value from the tree
 
-    card findMax() const;
-    card findMin() const;
+    card findMax() const; //rightest most node
+    card findMin() const; //leftest most node
 
  private:
 
     struct Node {
-	card info;
-	Node *left, *right, * parent;
-	// useful constructor:
-    Node(card v) : info(v), left(0), right(0), parent(0) { }
+	    card info;
+	    Node *left, *right, * parent;
+	//constructor:
+        Node(card v) : info(v), left(0), right(0), parent(0) { }
     };
-    
 
-    // just one instance variable (pointer to root node):
     Node *root;
 
     // recursive utility functions for use by public methods above

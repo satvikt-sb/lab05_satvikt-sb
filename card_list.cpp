@@ -7,6 +7,7 @@
 #include <iostream>
 using namespace std;
 
+//constructor
 card_list::card_list() { 
     root = nullptr;
 }
@@ -16,28 +17,23 @@ card_list::~card_list() {
     clear(root);
 }
 
-// recursive helper for destructor
+//destructor
 void card_list::clear(Node *n) {
-    if (!n){
-        return;
+    if (n != nullptr) {
+        clear(n->left);
+        clear(n->right);
+        delete n;
     }
-    clear(n->left);
-    clear(n->right);
-    delete n;
 }
 
-// insert value in tree; return false if duplicate
+// insert value
 bool card_list::insert(card value) {
-    if(!root)
-    {
+    if (root == nullptr) {
         root = new Node(value);
         return true;
-    }
-    else
-    {
+    } else {
         return insert(value, root);
     }
-    
 }
 
 // recursive helper for insert (assumes n is never 0)
@@ -67,15 +63,17 @@ bool card_list::insert(card value, Node *n) {
     }
 }
 
-// print tree data in-order, with helper
+//in-order traversal
 void card_list::printInOrder() const {
     printInOrder(root);
 }
+
 void card_list::printInOrder(Node *n) const {
-    if(!n){return;}
-    printInOrder(n->left);
-    cout << (n->info).get_suit() << " " << (n->info).get_value() << endl;
-    printInOrder(n->right);
+    if (n != nullptr) {
+        printInOrder(n->left);
+        cout << (n->info).get_suit() << " " << (n->info).get_value() << endl;
+        printInOrder(n->right);
+    }
 }
 
 // IMPLEMENT THIS FIRST: returns the node for a given value or NULL if none exists
@@ -85,22 +83,18 @@ void card_list::printInOrder(Node *n) const {
 // Whenever you call this method from somewhere else, pass it
 // the root node as "n"
 card_list::Node* card_list::getNodeFor(card value, Node* n) const{
-    if(!n){
-        return nullptr;
+    if (n == nullptr) {
+        return nullptr;  
     }
-    else if(n->info == value){
-        return n;
+    else if (n->info == value) {
+        return n; 
+    } else if (n->info > value) {
+        return getNodeFor(value, n->left); 
+    } else {
+        return getNodeFor(value, n->right); 
     }
-    else if(n->info > value){
-        return getNodeFor(value, n->left);
-    }
-    else {
-        return getNodeFor(value, n->right);
-    }
-
 }
 
-// returns true if value is in the tree; false if not
 bool card_list::contains(card value) const {
     if (getNodeFor(value, root) == nullptr){
         return false;
@@ -112,9 +106,28 @@ bool card_list::isEmpty() const {
     if (root == nullptr){
         return true;
     }
-
     return false;
 }
+
+// rightmost node
+card card_list::findMax() const {
+    Node* node = root;
+    while (node && node->right) {
+        node = node->right;
+    }
+    return node->info;
+}
+
+// leftmost node
+card card_list::findMin() const {
+    Node* node = root;
+    while (node && node->left) {
+        node = node->left;
+    }
+    return node->info;
+}
+
+
 // returns the Node containing the predecessor of the given value
 card_list::Node* card_list::getPredecessorNode(card value) const{
     Node* curr = getNodeFor(value, root);
@@ -142,14 +155,12 @@ card_list::Node* card_list::getPredecessorNode(card value) const{
     }
 }
 
-// returns the predecessor value of the given value or 0 if there is none
 card card_list::getPredecessor(card value) const{
     Node* pred = getPredecessorNode(value);
 
     if(pred == nullptr){
         return {'0',"0"};
-    }
-    else{
+    } else {
         return pred->info;
     }
 }
@@ -160,9 +171,7 @@ card_list::Node* card_list::getSuccessorNode(card value) const{
 
     if (curr == nullptr){
         return nullptr;
-    }
-
-    else if (curr->right != nullptr){
+    } else if (curr->right != nullptr){
         curr = curr->right;
 
         while (curr->left != nullptr){
@@ -170,7 +179,6 @@ card_list::Node* card_list::getSuccessorNode(card value) const{
         }
         return curr;
     }
-
     else {
         Node* parent = curr->parent;
         while (parent != nullptr && curr == parent->right) {
@@ -179,39 +187,18 @@ card_list::Node* card_list::getSuccessorNode(card value) const{
         }
         return parent;
     }
-
 }
 
-// returns the successor value of the given value or 0 if there is none
 card card_list::getSuccessor(card value) const{
     Node* succ = getSuccessorNode(value);
 
     if(succ == nullptr){
         return {'0',"0"};
-    }
-    else{
+    } else {
         return succ->info;
     }
 }
 
-
-// Helper method to find the rightmost (maximum) node
-card card_list::findMax() const {
-    Node* node = root;
-    while (node && node->right) {
-        node = node->right;
-    }
-    return node->info;
-}
-
-// Helper method to find the leftmost (minimum) node
-card card_list::findMin() const {
-    Node* node = root;
-    while (node && node->left) {
-        node = node->left;
-    }
-    return node->info;
-}
 // deletes the Node containing the given value from the tree
 // returns true if the node exist and was deleted or false if the node does not exist
 bool card_list::remove(card value){
