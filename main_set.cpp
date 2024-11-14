@@ -38,14 +38,16 @@ int main(int argc, char* argv[]) {
   while (getline(cardFile1, line) && (line.length() > 0)) {
     char suit = line[0];
     string value = line.substr(2);
-    alice.insert(card(suit, value));
+    card card(suit, value);
+    alice.insert(card);
   }
   cardFile1.close();
 
   while (getline(cardFile2, line) && (line.length() > 0)) {
     char suit = line[0];
     string value = line.substr(2);
-    bob.insert(card(suit, value));
+    card card(suit, value);
+    bob.insert(card);
   }
   cardFile2.close();
 

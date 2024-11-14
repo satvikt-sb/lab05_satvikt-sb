@@ -30,6 +30,11 @@ string card::get_value() const{
     return this->final_card.second;
 }
 
+bool card::operator==(const card& comp_card) const{
+    return suitOrder.at(get_suit()) == suitOrder.at(comp_card.get_suit()) &&
+               valueOrder.at(get_value()) == valueOrder.at(comp_card.get_value());
+}
+
 bool card::operator>(const card& comp_card) const{
     if (suitOrder.at(this->get_suit()) > suitOrder.at(comp_card.get_suit())) {
         return true;
@@ -53,9 +58,5 @@ bool card::operator<(const card& comp_card) const{
     return valueOrder.at(this->get_value()) < valueOrder.at(comp_card.get_value());
 }
 
-bool card::operator==(const card& comp_card) const{
-    return suitOrder.at(get_suit()) == suitOrder.at(comp_card.get_suit()) &&
-               valueOrder.at(get_value()) == valueOrder.at(comp_card.get_value());
-}
 
 

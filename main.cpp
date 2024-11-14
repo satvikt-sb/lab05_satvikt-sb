@@ -32,7 +32,8 @@ int main(int argc, char* argv[]) {
   while (getline(cardFile1, line) && (line.length() > 0)) {
     char suit = line[0];
     string value = line.substr(2);
-    alice.insert(card(suit, value));
+    card card(suit, value);
+    alice.insert(card);
   }
   cardFile1.close();
 
@@ -40,7 +41,8 @@ int main(int argc, char* argv[]) {
   while (getline(cardFile2, line) && (line.length() > 0)) {
     char suit = line[0];
     string value = line.substr(2);
-    bob.insert(card(suit, value));
+    card card(suit, value);
+    alice.insert(card);
   }
   cardFile2.close();
 
@@ -62,41 +64,45 @@ void playgame(card_list &alice, card_list &bob){
   card aliceCard = alice.findMin();
   card bobCard = bob.findMax();
 
-  while(!finished){
+  while(finished == false){
+
     finished = true;
 
     //Alice's turn
     while(true){
       if(bob.contains(aliceCard)){
-        cout << "Alice picked matching card " << aliceCard.get_suit() << " " << aliceCard.get_value() << endl;
+        cout << "Alice picked matching card " << (aliceCard).get_suit() << " " << (aliceCard).get_value() << endl;
         bob.remove(aliceCard);
-        alice.remove(bobCard);
+        alice.remove(aliceCard);
         bobCard = bob.findMax();
         finished = false;
         break;
       } else {
         aliceCard = alice.getSuccessor(aliceCard);
-      }
-      if (aliceCard == alice.findMax()) {
-        return;
+        
+        if (aliceCard == alice.findMax()) {
+          return;
       }
     } 
+    }
 
+    //Bob's turn
     while (true) {
       if (alice.contains(bobCard)) {
-        cout << "Bob picked matching card " << bobCard.get_suit() << " " << bobCard.get_value() << endl;
-        alice.remove(aliceCard); 
-        bob.remove(bobCard);   
+        cout << "Bob picked matching card " << (bobCard).get_suit() << " " << (bobCard).get_value() << endl;
+        bob.remove(bobCard); 
+        alice.remove(bobCard); 
         aliceCard = alice.findMin(); 
         finished = false;     
-        break;   
+        break;  
       } else {
         bobCard = bob.getPredecessor(bobCard); 
-      }
+
         if (bobCard == bob.findMin()) {
           return;
-    }
-    }
+        }
+        }
 
+    }
   }
 }

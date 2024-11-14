@@ -13,9 +13,9 @@ class card{
     public:
         card(char suit, string value);
         pair <char,string> get_card(); 
+        bool operator==(const card& comp_card) const;
         bool operator>(const card& comp_card) const;
         bool operator<(const card& comp_card) const;
-        bool operator==(const card& comp_card) const;
         char get_suit() const;
         string get_value() const;
     private:
