@@ -56,15 +56,15 @@ int main(int argv, char** argc){
   cout << endl;
   cout << "Alice's cards:" << endl;
 
-  for (std::set<card>::iterator it = alice.begin(); it != alice.end(); ++it) {
-    cout << it->get_suit() << " " << it->get_value() << endl;
+  for (auto it : alice){
+    cout << (it).get_suit() << " " << (it).get_value() << endl;
   }
 
   cout << endl;
   
   cout << "Bob's cards:" << endl;
-  for (std::set<card>::reverse_iterator it = bob.rbegin(); it != bob.rend(); ++it) {
-    cout << it->get_suit() << " " << it->get_value() << endl;
+  for (auto it = bob.rbegin(); it != bob.rend(); ++it){
+    cout << (*it).get_suit() << " " << (*it).get_value() << endl;
   }
 
   return 0; 
