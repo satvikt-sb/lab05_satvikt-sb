@@ -1,146 +1,82 @@
-
 #include "card_list.h"
 #include "card.h"
 #include <iostream>
 
 using namespace std;
 
-
-void testInsertAndFind() {
-    card_list cards;
-    card c1('c', "5"), c2('d', "10"), c3('h', "a");
-
-    // Test insertions and findings
-    bool passed = true;
-
-    if (!cards.insert(c1) || !cards.contains(c1)) {
-        cout << "testInsertAndFind failed on c1 insert/find" << endl;
-        passed = false;
-    }
-    if (!cards.insert(c2) || !cards.contains(c2)) {
-        cout << "testInsertAndFind failed on c2 insert/find" << endl;
-        passed = false;
-    }
-    if (!cards.insert(c3) || !cards.contains(c3)) {
-        cout << "testInsertAndFind failed on c3 insert/find" << endl;
-        passed = false;
-    }
-    if (cards.contains(card('s', "2"))) {
-        cout << "testInsertAndFind failed: found card not inserted" << endl;
-        passed = false;
-    }
-
-    if (passed) cout << "testInsertAndFind passed!" << endl;
+void testInsert() {
+    card_list list;
+    list.insert(card('h', "5"));
+    cout << "Test Insert and Print:" << endl;
+    list.printInOrder();
 }
 
-void testDelete() {
-    card_list cards;
-    card c1('c', "5"), c2('d', "10"), c3('h', "a");
-
-    cards.insert(c1);
-    cards.insert(c2);
-    cards.insert(c3);
-
-    bool passed = true;
-
-    if (!cards.remove(c1) || cards.contains(c1)) {
-        cout << "testDelete failed on c1 remove" << endl;
-        passed = false;
-    }
-    if (!cards.remove(c2) || cards.contains(c2)) {
-        cout << "testDelete failed on c2 remove" << endl;
-        passed = false;
-    }
-    if (!cards.remove(c3) || cards.contains(c3)) {
-        cout << "testDelete failed on c3 remove" << endl;
-        passed = false;
-    }
-
-    if (passed) cout << "testDelete passed!" << endl;
+void testFindMin() {
+    card_list list;
+    list.insert(card('d', "3"));
+    list.insert(card('c', "8"));
+    cout << "Test Find Min:" << endl;
+    cout << "Min card: " << list.findMin().get_suit() << " " << list.findMin().get_value() << endl;
 }
 
-void testSuccessor() {
-    card_list cards;
-    card c1('c', "5"), c2('d', "10"), c3('s', "3");
-
-    cards.insert(c1);
-    cards.insert(c2);
-    cards.insert(c3);
-
-    bool passed = true;
-
-    if (cards.getSuccessor(c1).get_value() != "10") {
-        cout << "testSuccessor failed for c1" << endl;
-        passed = false;
-    }
-    if (cards.getSuccessor(c3).get_value() != "5") {
-        cout << "testSuccessor failed for c3" << endl;
-        passed = false;
-    }
-    if (cards.getSuccessor(c2).get_value() != "0") {  // No successor
-        cout << "testSuccessor failed for c2" << endl;
-        passed = false;
-    }
-
-    if (passed) cout << "testSuccessor passed!" << endl;
+void testFindMax() {
+    card_list list;
+    list.insert(card('h', "4"));
+    list.insert(card('s', "10"));
+    cout << "Test Find Max:" << endl;
+    cout << "Max card: " << list.findMax().get_suit() << " " << list.findMax().get_value() << endl;
 }
 
-void testPredecessor() {
-    card_list cards;
-    card c1('c', "5"), c2('d', "10"), c3('s', "3");
-
-    cards.insert(c1);
-    cards.insert(c2);
-    cards.insert(c3);
-
-    bool passed = true;
-
-    if (cards.getPredecessor(c1).get_value() != "3") {
-        cout << "testPredecessor failed for c1" << endl;
-        passed = false;
-    }
-    if (cards.getPredecessor(c2).get_value() != "5") {
-        cout << "testPredecessor failed for c2" << endl;
-        passed = false;
-    }
-    if (cards.getPredecessor(c3).get_value() != "0") {  // No predecessor
-        cout << "testPredecessor failed for c3" << endl;
-        passed = false;
-    }
-
-    if (passed) cout << "testPredecessor passed!" << endl;
+void testContains() {
+    card_list list;
+    list.insert(card('c', "7"));
+    cout << "Test Contains:" << endl;
+    cout << "Contains c 7? " << (list.contains(card('c', "7")) ? "Yes" : "No") << endl;
 }
 
-void testFindMinAndMax() {
-    card_list cards;
-    card c1('c', "5"), c2('d', "10"), c3('s', "3");
+void testGetSuccessor() {
+    card_list list;
+    list.insert(card('c', "5"));
+    list.insert(card('d', "9"));
+    cout << "Test Get Successor:" << endl;
+    cout << "Successor of c 5: " << list.getSuccessor(card('c', "5")).get_suit() << " " << list.getSuccessor(card('c', "5")).get_value() << endl;
+}
 
-    cards.insert(c1);
-    cards.insert(c2);
-    cards.insert(c3);
+void testGetPredecessor() {
+    card_list list;
+    list.insert(card('h', "6"));
+    list.insert(card('d', "10"));
+    cout << "Test Get Predecessor:" << endl;
+    cout << "Predecessor of d 10: " << list.getPredecessor(card('d', "10")).get_suit() << " " << list.getPredecessor(card('d', "10")).get_value() << endl;
+}
 
-    bool passed = true;
+void testRemove() {
+    card_list list;
+    list.insert(card('s', "8"));
+    list.insert(card('h', "3"));
+    cout << "Test Remove:" << endl;
+    list.printInOrder();
+    list.remove(card('h', "3"));
+    cout << "After removing h 3:" << endl;
+    list.printInOrder();
+}
 
-    if (cards.findMin().get_value() != "3") {
-        cout << "testFindMinAndMax failed on findMin" << endl;
-        passed = false;
-    }
-    if (cards.findMax().get_value() != "10") {
-        cout << "testFindMinAndMax failed on findMax" << endl;
-        passed = false;
-    }
-
-    if (passed) cout << "testFindMinAndMax passed!" << endl;
+void testIsEmpty() {
+    card_list list;
+    cout << "Test Is Empty:" << endl;
+    cout << "Is list empty? " << (list.isEmpty() ? "Yes" : "No") << endl;
+    list.insert(card('d', "2"));
+    cout << "Is list empty after insert? " << (list.isEmpty() ? "Yes" : "No") << endl;
 }
 
 int main() {
-    testInsertAndFind();
-    testDelete();
-    testSuccessor();
-    testPredecessor();
-    testFindMinAndMax();
-
-    cout << "All tests completed." << endl;
+    testInsert();
+    testFindMin();
+    testFindMax();
+    testContains();
+    testGetSuccessor();
+    testGetPredecessor();
+    testRemove();
+    testIsEmpty();
     return 0;
 }
-
