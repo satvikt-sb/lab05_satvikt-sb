@@ -56,15 +56,15 @@ int main(int argv, char** argc){
   cout << endl;
   cout << "Alice's cards:" << endl;
 
-  for (auto it : alice){
-    cout << (it).get_suit() << " " << (it).get_value() << endl;
+  for (std::set<card>::iterator it = alice.begin(); it != alice.end(); ++it) {
+    cout << it->get_suit() << " " << it->get_value() << endl;
   }
 
   cout << endl;
   
   cout << "Bob's cards:" << endl;
-  for (auto it = bob.rbegin(); it != bob.rend(); ++it){
-    cout << (*it).get_suit() << " " << (*it).get_value() << endl;
+  for (std::set<card>::reverse_iterator it = bob.rbegin(); it != bob.rend(); ++it) {
+    cout << it->get_suit() << " " << it->get_value() << endl;
   }
 
   return 0; 
@@ -72,27 +72,37 @@ int main(int argv, char** argc){
 
 
 void playgame(set<card> &alice, set<card, DescendingOrder> &bob){
-  set<card>::iterator aliceIt = alice.begin();
-    while (aliceIt != alice.end()) {
-       
-        if (bob.find(*aliceIt) != bob.end()) {
-            cout << "Alice picked matching card " << aliceIt->get_suit() << " " << aliceIt->get_value() << endl;
+  while (!alice.empty() && !bob.empty()) {
+        
+      
+        for (set<card>::iterator aliceIt = alice.begin(); aliceIt != alice.end(); ) {
+            auto matchInBob = bob.find(*aliceIt); 
 
-            bob.erase(*aliceIt);
-            aliceIt = alice.erase(aliceIt); 
-        } else {
-            ++aliceIt; 
+            if (matchInBob != bob.end()) {
+              
+                cout << "Alice picked matching card " << aliceIt->get_suit() << " " << aliceIt->get_value() << endl;
+                
+
+                bob.erase(matchInBob);
+                aliceIt = alice.erase(aliceIt); // Update Alice's iterator after erasing
+            } else {
+                ++aliceIt;
+            }
         }
 
-        set<card, DescendingOrder>::iterator bobIt = bob.begin();
-        while (bobIt != bob.end()) {
-            if (alice.find(*bobIt) != alice.end()) {
-                cout << "Bob picked matching card " << bobIt->get_suit() << " " << bobIt->get_value() << endl;
+        // Bob's turn: iterate through his hand in descending order
+        for (set<card, CompareCardsDescending>::iterator bobIt = bob.begin(); bobIt != bob.end(); ) {
+            auto matchInAlice = alice.find(*bobIt); // Check if Bob's card is in Alice's hand
 
-                alice.erase(*bobIt);
-                bobIt = bob.erase(bobIt); 
+            if (matchInAlice != alice.end()) {
+                // Match found: Bob picks the matching card
+                cout << "Bob picked matching card " << bobIt->get_suit() << " " << bobIt->get_value() << endl;
+                
+                // Remove the matching card from both hands
+                alice.erase(matchInAlice);
+                bobIt = bob.erase(bobIt); // Update Bob's iterator after erasing
             } else {
-                ++bobIt; 
+                ++bobIt; // Move to the next card if no match found
             }
         }
     }
