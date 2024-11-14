@@ -72,38 +72,41 @@ int main(int argv, char** argc){
 
 
 void playgame(set<card> &alice, set<card, DescendingOrder> &bob){
-  while (!alice.empty() && !bob.empty()) {
-        
-      
-        for (set<card>::iterator aliceIt = alice.begin(); aliceIt != alice.end(); ) {
-            auto matchInBob = bob.find(*aliceIt); 
 
-            if (matchInBob != bob.end()) {
-              
-                cout << "Alice picked matching card " << aliceIt->get_suit() << " " << aliceIt->get_value() << endl;
-                
-
-                bob.erase(matchInBob);
-                aliceIt = alice.erase(aliceIt); // Update Alice's iterator after erasing
-            } else {
-                ++aliceIt;
-            }
+  for (auto aliceIt = alice.begin(); aliceIt != alice.end(); ) {
+        auto bobMatch = bob.find(*aliceIt);
+        if (bobMatch != bob.end()) {
+            cout << "Alice picked matching card " << aliceIt->get_suit() << " " << aliceIt->get_value() << endl;
+            bob.erase(bobMatch);
+            aliceIt = alice.erase(aliceIt); // Update Alice's iterator
+        } else {
+            ++aliceIt; // Next card
+        }
+       
+        if (alice.empty() || bob.empty()){
+          break;
         }
 
-        // Bob's turn: iterate through his hand in descending order
-        for (set<card, DescendingOrder>::iterator bobIt = bob.begin(); bobIt != bob.end(); ) {
-            auto matchInAlice = alice.find(*bobIt); // Check if Bob's card is in Alice's hand
-
-            if (matchInAlice != alice.end()) {
-                // Match found: Bob picks the matching card
+        // Bob's turn: iterate through his hand from the largest card
+        for (auto bobIt = bob.begin(); bobIt != bob.end(); ) {
+            // Check if Bob's current card is in Alice's hand
+            auto aliceMatch = alice.find(*bobIt);
+            if (aliceMatch != alice.end()) {
+                // Bob picks a matching card
                 cout << "Bob picked matching card " << bobIt->get_suit() << " " << bobIt->get_value() << endl;
-                
-                // Remove the matching card from both hands
-                alice.erase(matchInAlice);
-                bobIt = bob.erase(bobIt); // Update Bob's iterator after erasing
+
+                // Remove matching card from both Alice and Bob's hands
+                alice.erase(aliceMatch);
+                bobIt = bob.erase(bobIt); // Update Bob's iterator after removal
+                break; // End Bob's turn after finding a match
             } else {
-                ++bobIt; // Move to the next card if no match found
+                ++bobIt; // 
             }
         }
-    }
+
+        // 
+          if (alice.empty() || bob.empty()){
+            break;
+          }
+      }
 }
