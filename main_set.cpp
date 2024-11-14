@@ -72,41 +72,38 @@ int main(int argv, char** argc){
 
 
 void playgame(set<card> &alice, set<card, DescendingOrder> &bob){
+for (auto aliceIt = alice.begin(); aliceIt != alice.end();){
 
-  for (auto aliceIt = alice.begin(); aliceIt != alice.end(); ) {
-        auto bobMatch = bob.find(*aliceIt);
-        if (bobMatch != bob.end()) {
-            cout << "Alice picked matching card " << aliceIt->get_suit() << " " << aliceIt->get_value() << endl;
+      auto bobIt = bob.begin();
+      auto match = bob.find(*aliceIt);
+
+      //check if Alice card in Bob hand
+      if (match != bob.end()){
+        cout << "Alice picked matching card " << (*aliceIt).get_suit() << " " <<  (*aliceIt).get_value() << endl;
+        bob.erase(match);
+        aliceIt = alice.erase(aliceIt);
+
+        //bob's turn
+        for(auto bobMatch = bobIt; bobMatch != bob.end();){
+          //checking if Bob's card is in Alice's hand
+          auto matchAlice = alice.find(*bobMatch);
+          if (matchAlice != alice.end()){
+            cout << "Bob picked matching card " << (*bobMatch).get_suit() << " " <<  (*bobMatch).get_value() << endl;
+            alice.erase(matchAlice);
             bob.erase(bobMatch);
-            aliceIt = alice.erase(aliceIt); // Update Alice's iterator
-        } else {
-            ++aliceIt; // Next card
-        }
-       
-        if (alice.empty() || bob.empty()){
-          break;
-        }
-
-        // Bob's turn: iterate through his hand from the largest card
-        for (auto bobIt = bob.begin(); bobIt != bob.end(); ) {
-            // Check if Bob's current card is in Alice's hand
-            auto aliceMatch = alice.find(*bobIt);
-            if (aliceMatch != alice.end()) {
-                // Bob picks a matching card
-                cout << "Bob picked matching card " << bobIt->get_suit() << " " << bobIt->get_value() << endl;
-
-                // Remove matching card from both Alice and Bob's hands
-                alice.erase(aliceMatch);
-                bobIt = bob.erase(bobIt); // Update Bob's iterator after removal
-                break; // End Bob's turn after finding a match
-            } else {
-                ++bobIt; // 
-            }
-        }
-
-        // 
-          if (alice.empty() || bob.empty()){
             break;
           }
+          else {
+            bobMatch++;
+          }
+        }
       }
+      else {
+        aliceIt++;
+      }
+      
+      if (alice.empty() || bob.empty()) {
+        break;
+      }
+    }
 }
