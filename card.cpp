@@ -8,7 +8,7 @@
 #include <string>
 
 map<char, int> suitOrder = {
-        {'c', 1}, {'d', 2}, {'s', 3}, {'h', 4},{'0', 0}
+        {'c', 1}, {'d', 2}, {'s', 3}, {'h', 4},{'0', 0} // Clubs, Diamonds, Spades, Hearts
     };
 
 map<string, int> valueOrder = {

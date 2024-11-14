@@ -53,6 +53,19 @@ int main(int argc, char* argv[]) {
 
   playgame(alice, bob);
 
+  cout << endl;
+
+  cout << "Alice's cards:" << endl;
+  for (auto it : alice){
+    cout << (it).get_suit() << " " << (it).get_value() << endl;
+  }
+
+  cout << endl;
+  
+  cout << "Bob's cards:" << endl;
+  for (auto it = bob.rbegin(); it != bob.rend(); ++it){
+    cout << (*it).get_suit() << " " << (*it).get_value() << endl;
+  }
   
 }
 

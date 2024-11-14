@@ -36,10 +36,13 @@ bool card_list::insert(card value) {
     }
 }
 
-
-
 // recursive helper for insert (assumes n is never 0)
 bool card_list::insert(card value, Node *n) {
+    if(n == nullptr){
+        n = new Node(value);
+        return true;
+    }
+
     if (value == n->info) {
         return false;
     } else if (value < n->info) {
@@ -59,7 +62,6 @@ bool card_list::insert(card value, Node *n) {
     }
 }
 
-
 // print tree data in-order, with helper
 void card_list::printInOrder() const {
     printInOrder(root);
@@ -72,7 +74,6 @@ void card_list::printInOrder(Node *n) const {
         printInOrder(n->right);
     }
 }
-
 
 // IMPLEMENT THIS FIRST: returns the node for a given value or NULL if none exists
 // Parameters:
