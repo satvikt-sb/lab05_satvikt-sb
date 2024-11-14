@@ -199,82 +199,58 @@ card card_list::getSuccessor(card value) const{
     }
 }
 
-// deletes the Node containing the given value from the tree
-// returns true if the node exist and was deleted or false if the node does not exist
 bool card_list::remove(card value){
-    if (contains(value) == false){
+    if (!contains(value)) {
         return false;
     }
 
-    Node* node_to_remove = getNodeFor(value,root);
+    Node* delNode = getNodeFor(value, root);
 
-    //if node has no children, leaf node
-    if ( (node_to_remove->left == nullptr) && (node_to_remove->right == nullptr) ){
-
-        if (node_to_remove->parent == nullptr){
-            delete node_to_remove;
+    if (delNode->left == nullptr && delNode->right == nullptr) {
+        if (delNode->parent == nullptr) {
             root = nullptr;
+        } else if (delNode->parent->right == delNode) {
+            delNode->parent->right = nullptr;
+        } else {
+            delNode->parent->left = nullptr;
         }
-
-        else{ 
-
-            if(node_to_remove->parent->right == node_to_remove){
-                node_to_remove->parent->right = nullptr;
-            }
-
-            else 
-            {
-                node_to_remove->parent->left = nullptr;
-            }
-            delete node_to_remove;
-        }
-
+        delete delNode;
     }
 
-    //if node has one child
-    else if ((node_to_remove->left == nullptr) || (node_to_remove->right == nullptr)){
+    //1 child
+    else if (delNode->left == nullptr || delNode->right == nullptr) {
 
-        card v('0',"0");
-        Node* child = new Node(v);
+    Node* child;
 
-        if (node_to_remove->right == nullptr){
-            child = node_to_remove->left;
-        }
-        else {
-            child = node_to_remove->right;
-        }
-
-        if(node_to_remove->parent == nullptr){
-            root = child;
-            root->parent = nullptr;
-        }
-        
-        else{
-
-            if (node_to_remove->parent->right == node_to_remove){
-                node_to_remove->parent->right = child;
-            }
-            else {
-                node_to_remove->parent->left = child;
-            }
-
-            child->parent = node_to_remove->parent;
-        }
-
-        delete node_to_remove;
+    if (delNode->right == nullptr) {
+        child = delNode->left;
+    } else {
+        child = delNode->right;
     }
 
-    // If node has two children
-    else{
-        Node* successor = getSuccessorNode(node_to_remove->info);
-
-        card succ_val = successor->info;
-
-        remove(succ_val);
-
-        node_to_remove->info = succ_val;
+    if (delNode->parent == nullptr) {
+        root = child;
+        root->parent = nullptr;
+    } 
+    else {
+        if (delNode->parent->right == delNode) {
+            delNode->parent->right = child;
+        } else {
+            delNode->parent->left = child;
+        }
+        child->parent = delNode->parent;
     }
     
+    delete delNode;
+    }
+
+    //2 children
+    else {
+        Node* successor = getSuccessorNode(delNode->info);
+        card succ_val = successor->info;
+        remove(succ_val);
+        delNode->info = succ_val;
+    }
 
     return true;
 }
