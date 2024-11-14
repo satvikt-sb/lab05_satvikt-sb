@@ -28,22 +28,14 @@ int main(int argv, char** argc){
   card_list alice;
   card_list bob;
 
-
   //Read each file
   while (getline (cardFile1, line) && (line.length() > 0)){
-    char suit = line[0];
-    string value = line.substr(2);
-    card card(suit, value);
-    alice.insert(card);
+    alice.insert(card(line[0], line.substr(2)));
   }
   cardFile1.close();
 
-
   while (getline (cardFile2, line) && (line.length() > 0)){
-    char suit = line[0];
-    string value = line.substr(2);
-    card card(suit, value);
-    bob.insert(card);
+    bob.insert(card(line[0], line.substr(2)));
   }
   cardFile2.close();
 
@@ -51,69 +43,85 @@ int main(int argv, char** argc){
   game(alice, bob);
 
   cout << endl;
-
-  //printing remaining cards
+  //printing cards
   cout << "Alice's cards:" << endl;
   alice.printInOrder();
-
   cout << endl;
-
   cout << "Bob's cards:" << endl;
   bob.printInOrder();
-  
   
   return 0;
 }
 
 void game(card_list &alice, card_list &bob){
-  card aliceCard = alice.findMin();
-  card bobCard = bob.findMax();
-  bool done = false;
+    card aliceCard = alice.findMin();
+    card bobCard = bob.findMax();
 
-  while(done == false){
+    while (!alice.isEmpty() && !bob.isEmpty()) {
+        bool found = false;
 
-    done = true;
+        // Alice's turn
+        while (bob.contains(aliceCard)) {
+            cout << "Alice picked matching card " << (aliceCard).get_suit() << " " << (aliceCard).get_value() << endl;
+            bob.remove(aliceCard);
+            alice.remove(aliceCard);
 
-    //Alice turn
-    while(true){
-      if (bob.contains(aliceCard)){
-        cout << "Alice picked matching card " << (aliceCard).get_suit() << " " <<  (aliceCard).get_value() << endl;
-        bob.remove(aliceCard);
-        alice.remove(aliceCard);
-        bobCard = bob.findMax();
-        done = false; 
-        break;
-      }
-      
-      else {
-        aliceCard = alice.getSuccessor(aliceCard);
+            // Update aliceCard to new min
+            if (!alice.isEmpty()) {
+                aliceCard = alice.findMin();
+            } else {
+                aliceCard = card('0', "0");
+            }
 
-        if (aliceCard == alice.findMax()){
-          return;
+            // Update bobCard to new max
+            if (!bob.isEmpty()) {
+                bobCard = bob.findMax();
+            } else {
+                bobCard = card('0', "0");
+            }
+            
+            found = true;
+            break;
+        }
+
+        if (!found) {
+            aliceCard = alice.getSuccessor(aliceCard);
+            if (aliceCard == alice.findMax()){
+              return;
+            }
+        }
+
+        found = false;
+
+        // Bob's turn
+        while (alice.contains(bobCard)) {
+            cout << "Bob picked matching card " << bobCard.get_suit() << " " << bobCard.get_value() << endl;
+            alice.remove(bobCard);
+            bob.remove(bobCard);
+
+            // Update bobCard to new max
+            if (!bob.isEmpty()) {
+                bobCard = bob.findMax();
+            } else {
+                bobCard = card('0', "0");
+            }
+
+            // Update aliceCard to new min
+            if (!alice.isEmpty()) {
+                aliceCard = alice.findMin();
+            } else {
+                aliceCard = card('0', "0");
+            }
+
+            found = true;
+            break;
+        }
+
+        if (!found) {
+            bobCard = bob.getPredecessor(bobCard);
+            if (bobCard == bob.findMin()){
+              return;
+            }
         }
       }
-
-    }
-
-    //bob's turn
-    while(true){
-      if (alice.contains(bobCard)){
-        cout << "Bob picked matching card " << (bobCard).get_suit() << " " <<  (bobCard).get_value() << endl;
-        bob.remove(bobCard);
-        alice.remove(bobCard);
-        aliceCard = alice.findMin();
-        done = false;
-        break;
-      }
-      else {
-        bobCard = bob.getPredecessor(bobCard);
-
-        if (bobCard == bob.findMin()){
-          return;
-        }
-      }
-    }
-
-  }
-
 }
