@@ -101,7 +101,7 @@ void game(card_list &alice, card_list &bob){
         if (bobCard == bob.findMin()) {
           return;
         }
-        }
+      }
 
     }
   }
