@@ -91,7 +91,7 @@ void playgame(set<card> &alice, set<card, DescendingOrder> &bob){
         }
 
         // Bob's turn: iterate through his hand in descending order
-        for (set<card, CompareCardsDescending>::iterator bobIt = bob.begin(); bobIt != bob.end(); ) {
+        for (set<card, DescendingOrder>::iterator bobIt = bob.begin(); bobIt != bob.end(); ) {
             auto matchInAlice = alice.find(*bobIt); // Check if Bob's card is in Alice's hand
 
             if (matchInAlice != alice.end()) {
